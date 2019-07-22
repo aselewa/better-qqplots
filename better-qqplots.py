@@ -49,7 +49,3 @@ def qq_plotter(x, y, lowr, uppr):
     ax.set_xticks(np.arange(0,scale,1))
     ax.set_yticks(np.arange(0,scale,1))
 
-
-    
- 
-
