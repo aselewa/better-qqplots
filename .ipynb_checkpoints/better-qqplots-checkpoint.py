@@ -7,7 +7,15 @@ def qqplot_unif(y, ax=None, return_object=False):
     '''
     Plots a quantile-quantile plot for the uniform distribution with 95% CI band based on the distribution of order statistics
     '''
+    if type(y) is not np.ndarray:
+        raise TypeError(f'Input should be an numpy array, not {type(y)}.')
+    elif y.ndim is not 1:
+        raise TypeError(f'Input should be an 1D numpy array, not a {y.ndim}D-array.')
+        
     N = len(y)
+    if N == 0:
+        raise ValueError('Input array should not have a length of 0.')
+        
     y = -np.log10(np.sort(y))
     rank = np.arange(1,N+1,1)
     x = -np.log10(rank/N)
@@ -41,17 +49,27 @@ def qqplot_norm(y, ax=None, return_object=False):
     '''
     Plots a quantile-quantile plot for the normal distribution with 95% CI band based on the distribution of order statistics
     '''
+    if type(y) is not np.ndarray:
+        raise TypeError(f'Input should be an numpy array, not {type(y)}.')
+    elif y.ndim is not 1:
+        raise TypeError(f'Input should be an 1D numpy array, not a {y.ndim}D-array.')
+        
     N = len(y)
+    if N == 0:
+        raise ValueError('Input array should not have a length of 0.')
+
     y = np.sort(y)
     y_mean = np.mean(y)
     y_std = np.std(y)
-    y_normed = (y-y_mean)/y_std
+    y_min_normed = (y[0]-y_mean)/y_std
+    y_max_normed = (y[N-1]-y_mean)/y_std
     q = (np.arange(1,N+1,1)-0.5)/N
     x = stats.norm.ppf(q)
     
     # Compute scale limits:
-    xmin = np.min([x[0], y_normed[0]]) - 0.1 # give room for points on the edges
-    xmax = np.max([x[N-1], y_normed[N-1]]) + 0.1
+    # give room for points on the edges
+    xmin = np.min([x[0], y_min_normed]) - 0.1 
+    xmax = np.max([x[N-1], y_max_normed]) + 0.1
     ymin = xmin * y_std + y_mean
     ymax = xmax * y_std + y_mean
         
